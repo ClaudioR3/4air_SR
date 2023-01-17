@@ -1,0 +1,76 @@
+{
+  "task": "rcan_sr_realworld_x4_psnr"     // real-world image sr. root/task/images-models-options
+  , "model": "plain" // "plain" | "plain2" if two inputs
+  , "gpu_ids": [0]
+  , "dist": false
+
+  , "scale": 5       // broadcast to "datasets"
+  , "n_channels": 3  // broadcast to "datasets", 1 for grayscale, 3 for color
+
+  , "path": {
+    "root": "rcan_3D"            // "denoising" | "superresolution" | "dejpeg"
+    , "pretrained_netG": null      // path of pretrained model
+    , "pretrained_netE": null      // path of pretrained model
+  }
+
+  , "datasets": {
+    "test": {
+     "name": "test_dataset"            // just name
+     , "rgb_range":255 // cosa a caso che viene da RCAN
+     , "dataset_type": "4air"         // "dncnn" | "dnpatch" | "fdncnn" | "ffdnet" | "sr" | "srmd" | "dpsr" | "plain" | "plainpatch" | "jpeg"
+     , "dataroot_H": "3D/test/HR"//"/gporq2/scratch_0/usr/aiidausr/machine_learning/data/4air/test_npy/HR"  // path of H testing dataset
+     , "dataroot_L": "3D/test/LR"//"/gporq2/scratch_0/usr/aiidausr/machine_learning/data/4air/test_npy/LR"              // path of L testing dataset
+     , "dataroot" : ""
+     , "storage" : "ceph"
+     , "dataloader_num_workers": 8
+     , "dataloader_batch_size": 1
+     , "lr_shape": [62,56,3]
+     , "hr_shape": [306,276,3]
+   }
+ }
+
+  , "netG": {
+    "net_type": "rcan"
+    ,"n_resgroups": 10,
+     "n_resblocks": 20,
+     "n_feats": 64,
+     "reduction": 16,
+     "scale": 5,
+     "rgb_range": 255,
+     "n_colors": 3,
+     "res_scale": 1,
+    //"upsampler": "pixelshuffle",        // "pixelshuffle" | "pixelshuffledirect" | "nearest+conv" | null
+    //"resi_connection": "1conv",        // "1conv" | "3conv"
+
+    "init_type": "default"
+  }
+
+
+  , "train": {
+    "G_lossfn_type": "l1"               // "l1" preferred | "l2sum" | "l2" | "ssim" | "charbonnier"
+    , "G_lossfn_weight": 1.0            // default
+
+    , "E_decay": 0.999                  // Exponential Moving Average for netG: set 0 to disable; default setting 0.999
+
+    , "G_optimizer_type": "adam"        // fixed, adam is enough
+    , "G_optimizer_lr": 1e-5            // learning rate
+    , "G_optimizer_wd": 0               // weight decay, default 0
+    , "G_optimizer_clipgrad": null      // unused
+    , "G_optimizer_reuse": true         //
+    , "G_optimizer_betas": [0.9, 0.999]          //aggiunto sempre a caso (coefficiente usato per cose a caso)
+
+    , "G_scheduler_type": "MultiStepLR" // "MultiStepLR" is enough
+    , "G_scheduler_milestones": [500000, 800000, 900000, 950000, 1000000]
+    , "G_scheduler_gamma": 0.5
+    , "manual_seed": 42
+    , "G_regularizer_orthstep": null    // unused
+    , "G_regularizer_clipstep": null    // unused
+
+    , "G_param_strict": true
+    , "E_param_strict": true
+
+    , "checkpoint_test": 10000           // for testing
+    , "checkpoint_save": 10000           // for saving model
+    , "checkpoint_print": 200           // for print
+  }
+}
