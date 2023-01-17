@@ -1,4 +1,4 @@
-#4AIR Project
+# 4AIR Project
 
 The code is related to ENEA's scientific work. 
 In the present work, we use and compare four different neural networks (SRMD, RCAN, ESRGAN and SwinIR) for the task of Super Resolution on air quality domain.
@@ -6,7 +6,7 @@ In the present work, we use and compare four different neural networks (SRMD, RC
 The code is based on the Official GitHub project https://github.com/cszn/KAIR .
 
 
-##How to install
+## How to install
 The file of requirement has been uploaded to allow you to install easily the conda environment.
 Use the terminal or an Anaconda Prompt for the following steps:
 
@@ -37,8 +37,8 @@ Furthermore, there are two different dataset. The first one, is based on conside
 
 You can download the 4AIR's data set [here](https://zenodo.org/record/7458663#.Y8Z0qXbMJD8).
 
-##Get start
-###How to train
+## Get start
+### How to train
 Run the following command line in order to train the NN with 1D dataset
 
 ```commandline
@@ -51,7 +51,7 @@ Run the following command line in order to train the NN with 3D dataset
 python main_infer.py --opt options/<nn>/train_<nn>X5_3D.json
 ```
 
-###How to test
+### How to test
 Run the following command line in order to test the NN with 1D dataset
 
 ```commandline
@@ -64,7 +64,7 @@ Run the following command line in order to test the NN with 3D dataset
 python main_infer.py --opt options/<nn>/test_<nn>X5_3D.json
 ```
 
-###How to infer
+### How to infer
 Run the following command line in order to infer the NN with 1D dataset
 
 ```commandline
