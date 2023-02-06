@@ -3,6 +3,7 @@ import boto3
 from botocore.exceptions import ClientError
 import warnings
 import numpy as np
+from io import BytesIO
 
 
 class CephStorage(FileStorage):
@@ -35,8 +36,10 @@ class CephStorage(FileStorage):
                 Bucket = self.properties['bucket_name'],
                 Key = file
             )['Body'].read().decode(decode)
-        return content
-        # return np.frombuffer(content, dtype='float32')[32:]
+        with BytesIO(content) as f:
+            f.seek(0)
+            array = np.load(f)
+        return array
     
     def write(self, file, body, acl = 'public-read'):
         """Load a file to S3 / Ceph Object Storage

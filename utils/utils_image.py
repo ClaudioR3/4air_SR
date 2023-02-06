@@ -705,7 +705,7 @@ def calc_mse_psnr(sr, hr, scale, rgb_range):
         diff.mul_(convert).div_(256)
         diff = diff.sum(dim=1, keepdim=True)
     """
-    valid = diff[ 2, shave:-shave, shave:-shave]
+    valid = diff[:, shave:-shave, shave:-shave]
     mse = valid.pow(2).mean()
 
     return mse, -10 * math.log10(mse)

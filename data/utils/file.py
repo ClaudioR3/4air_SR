@@ -10,6 +10,7 @@ class FileStorage:
         self.root_dir = root_dir
         
     def read(self, file, decode = "utf-8"):
+        """
         if decode is None: 
             with open(file, 'rb') as f:
                 reader = f.read()
@@ -17,7 +18,8 @@ class FileStorage:
             with open(file, 'rb') as f:
                 reader = f.read().decode(decode)
         return reader
-        #return np.load(file)
+        """
+        return np.load(file)
     
     def write(self, file, body):
         """Write the content body in the file using binary mode

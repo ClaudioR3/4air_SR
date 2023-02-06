@@ -86,41 +86,31 @@ class Dataset4AIR(data.Dataset):
         # else:
         # LR
         # load numpy file
-        lr =np.frombuffer(self.storage.read(
+        lr =self.storage.read(
                 os.path.join(self.dataroot_L,filename),
-                decode = None), dtype='float32')
+                decode = None)
         # 1D -> 2D
-        lr = lr[32:].reshape(*self.lr_shape)
-
-        if self.args['mostra_canali']:
-            #from matplotlib import pyplot as plt
-            #plt.imshow(lr)
-            np.save('tmp/mostra_canali/'+filename, lr)
+        lr = lr.reshape(*self.lr_shape)
+        # cut the borders
+        lr = lr[:-1, :-1]
 
 
         if not self.args['inference'] :
-            # cut the borders
-            lr = lr[:-1, :-1]
             # HR
-            hr =self.storage.read(
-                    os.path.join(self.dataroot_H,filename),
-                    decode = None)
+            hr = self.storage.read(
+                os.path.join(self.dataroot_H,filename),
+                decode=None)
             # 1D -> 2D
             hr = hr.reshape(*self.hr_shape)
             # cut the borders
             hr = hr[:-1,:-1]
-            #hr=np.load(self.HR_path[idx])[:-1,:-1]
             hr = common.set_channel([hr], self.args["n_channels"])[0]
+
             data={
                 "L":common.np2Tensor([lr], self.args["rgb_range"])[0],"H":common.np2Tensor([hr], self.args["rgb_range"])[0],
                 "filename": filename
                  }
         else:
-            # 1D -> 2D
-            lr = lr.reshape(*self.lr_shape)
-            # cut the borders
-            lr = lr[:-1, :-1]
-            # lr=np.load(self.LR_path[idx])[:-1,:-1]
             lr = common.set_channel([lr], self.args["n_channels"])[0]
             data = {
                 "L": common.np2Tensor([lr], self.args["rgb_range"])[0],

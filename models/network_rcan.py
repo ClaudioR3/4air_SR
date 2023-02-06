@@ -1,5 +1,5 @@
 from models import common
-
+import torch
 import torch.nn as nn
 
 
@@ -84,7 +84,10 @@ class RCAN(nn.Module):
         # RGB mean for DIV2K
         rgb_mean = (0.4488, 0.4371, 0.4040)
         rgb_std = (1.0, 1.0, 1.0)
-        self.sub_mean = common.MeanShift(args['rgb_range'], rgb_mean, rgb_std)
+        if args['n_colors'] == 3:
+            self.sub_mean = common.MeanShift(args['rgb_range'], rgb_mean, rgb_std)
+        else:
+            self.sub_mean = None
 
         # define head module
         modules_head = [conv(args['n_colors'], n_feats, kernel_size)]
@@ -102,21 +105,24 @@ class RCAN(nn.Module):
             common.Upsampler(conv, scale, n_feats, act=False),
             conv(n_feats, args['n_colors'], kernel_size)]
 
-        self.add_mean = common.MeanShift(args['rgb_range'], rgb_mean, rgb_std, 1)
+        if args['n_colors'] == 3:
+            self.add_mean = common.MeanShift(args['rgb_range'], rgb_mean, rgb_std, 1)
+        else:
+            self.sub_mean = None
 
         self.head = nn.Sequential(*modules_head)
         self.body = nn.Sequential(*modules_body)
         self.tail = nn.Sequential(*modules_tail)
 
     def forward(self, x):
-        x = self.sub_mean(x)
+        if self.sub_mean!=None: x = self.sub_mean(x)
         x = self.head(x)
 
         res = self.body(x)
         res += x
 
         x = self.tail(res)
-        x = self.add_mean(x)
+        if self.add_mean!=None: x = self.add_mean(x)
 
         return x
 """
