@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/589938828.svg)](https://zenodo.org/badge/latestdoi/589938828)
+
 # 4AIR Project
 
 The code is related to ENEA's scientific work. 
